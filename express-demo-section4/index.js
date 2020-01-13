@@ -1,8 +1,30 @@
+const config = require('config');
+const helmet = require('helmet');
+const morgan = require('morgan');
 const Joi = require("joi");
+const logger = require('./logger')
 const express = require("express");
 const app = express();
 
+
+require('dotenv').config()
+
+app.use(express.static('public'));
 app.use(express.json());
+app.use(logger);
+app.use(helmet())
+
+// Configuration
+
+// console.log('Application Name : ' + config.get('name'))
+// console.log('Mail server : ' + config.get('mail.host'))
+// console.log('Mail password : ' + config.get('mail.password'))
+
+if(app.get('env') === 'development'){
+  app.use(morgan('tiny'));
+  console.log('Morgan Enabled...')
+}
+
 
 let courses = [
   { id: 1, name: "course1" },
@@ -49,7 +71,7 @@ app.put("/api/courses/:id", (req, res) => {
   const { error } = validateCourse(req.body);
   if (error) {
     return res.status(400).send(error.details[0].message);
-    
+
   }
   //Update course
   course.name = req.body.name;
@@ -74,7 +96,7 @@ app.delete("/api/courses/:id", (req, res) => {
   // Not existing, return 404
   const course = courses.find(el => el.id === parseInt(req.params.id));
   if (!course) {
-   return res.status(404).send("The course with the given ID was not found");
+    return res.status(404).send("The course with the given ID was not found");
   }
   //Delete
   const index = courses.indexOf(course);
@@ -95,3 +117,5 @@ app.get("/api/courses/:id", (req, res) => {
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => console.log(`Listening on port ${port}...`));
+
+console.log(process.env)
