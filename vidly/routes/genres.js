@@ -16,11 +16,11 @@ const genres = [
     }
 ];
 
-router.get("/api/film/genres", (req, res) => {
+router.get("/", (req, res) => {
     res.send(genres);
 });
 
-router.post("/api/film/genres", (req, res) => {
+router.post("/", (req, res) => {
     //   const newsGenre = req.params.
     const { error } = validateGenre(req.body);
 
@@ -36,7 +36,7 @@ router.post("/api/film/genres", (req, res) => {
     res.send(newsGenre);
 });
 
-router.put("/api/film/genres/:id", (req, res) => {
+router.put("/:id", (req, res) => {
     const id = req.params.id;
     const retrieve = genres.findIndex(el => el.id == id);
 
@@ -52,7 +52,7 @@ router.put("/api/film/genres/:id", (req, res) => {
     res.status(200).send(genres);
 });
 
-router.delete("/api/film/genres/:id", (req, res) => {
+router.delete("/:id", (req, res) => {
     const id = req.params.id;
     const retrieve = genres.findIndex(el => el.id == id); //indexOf
 
@@ -64,7 +64,7 @@ router.delete("/api/film/genres/:id", (req, res) => {
     res.send("This genre is now deleted");
 });
 
-router.get("/api/film/genres/:id", (req, res) => {
+router.get("/:id", (req, res) => {
     const retrieve = genres.findIndex(el => el.id == req.params.id);
     if (retrieve < 0)
         return res.status(404).send("The genre with the given ID was not found.");
