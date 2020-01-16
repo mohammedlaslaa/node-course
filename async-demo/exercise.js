@@ -19,9 +19,9 @@ let obji = {
 
 const mymovies = ["Movie1", "Movie2", "Movie3"]
 
-async function senMail() {
+async function notifyCus() {
   try {
-    const customer = await getCustomer(obji)
+    const customer = await getCustomer(1)
     console.log("Customer : ", customer);
     if (customer.isGold) {
       const movies = await getTopMovies(mymovies);
@@ -34,12 +34,17 @@ async function senMail() {
   }
 }
 
-senMail();
+notifyCus();
 
-function getCustomer(obj) {
+function getCustomer(id) {
   return new Promise((res, rej) => {
     setTimeout(() => {
-      res(obj);
+      res({
+        id: 1,
+        name: "Mohammed",
+        isGold: true,
+        email: "mohamed.laslaa@gmail.com"
+      });
     }, 4000)
   })
 
