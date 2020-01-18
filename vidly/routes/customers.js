@@ -1,38 +1,36 @@
-const { Genre, validateGenre } = require("../models/genreModel");
+const {Customer, validateCustomer} = require('../models/customerModel');
 const express = require("express");
 const router = express.Router();
-const mongoose = require("mongoose");
-const Joi = require("joi");
+const mongoose = require("mongoose")
 
 mongoose.set("useFindAndModify", false);
 
 router.get("/", async (req, res) => {
-  const genres = await Genre.find().sort("name");
-  res.send(genres);
+  const customers = await Customer.find().sort("name");
+  res.send(customers);
 });
 
 router.post("/", async (req, res) => {
-  //   const newsGenre = req.params.
-  const { error } = validateGenre(req.body);
+  const { error } = validateCustomer(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  let genre = new Genre({ name: req.body.name });
-  genre = await genre.save();
+  let customer = new Customer({ name: req.body.name, phone: req.body.phone });
+  customer = await customer.save();
 
-  res.send(genre);
+  res.send(customer);
 });
 
 router.put("/:id", async (req, res) => {
-  const { error } = validateGenre(req.body);
+  const { error } = validateCustomer(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   try {
-    const genre = await Genre.findByIdAndUpdate(
+    const customer = await Customer.findByIdAndUpdate(
       req.params.id,
-      { name: req.body.name },
+      { name: req.body.name, phone: req.body.phone, isGold: req.body.isGold},
       { new: true }
     );
-    res.send(genre);
+    res.send(customer);
   } catch (err) {
     return res.status(404).send("The genre with the given ID was not found.");
   }
@@ -42,8 +40,8 @@ router.delete("/:id", async (req, res) => {
   const id = req.params.id;
 
   try {
-    const genre = await Genre.findByIdAndRemove(id);
-    res.send(genre);
+    const customer = await Customer.findByIdAndRemove(id);
+    res.send(customer);
   } catch (err) {
     return res.status(404).send("The genre with the given ID was not found.");
   }
@@ -51,11 +49,13 @@ router.delete("/:id", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    const genre = await Genre.findById(req.params.id);
-    res.send(genre);
+    const customer = await Customer.findById(req.params.id);
+    res.send(customer);
   } catch (err) {
     return res.status(404).send("The genre with the given ID was not found.");
   }
 });
 
-module.exports = router; 
+
+
+module.exports = router;
