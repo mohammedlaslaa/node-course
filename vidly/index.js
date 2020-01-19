@@ -21,7 +21,7 @@ app.use("/api/film/customers", customers);
 app.use("/api/film/movies", movies);
 app.use("/api/film/rentals", rentals);
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8050;
 
 app.listen(port, () => {
   console.log(`Server listening to the port ${port}`);

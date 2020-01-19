@@ -10,7 +10,10 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
+    "fawn": "^2.1.5",
     "joi": "^13.1.0",
-    "mongoose": "^5.8.9"
+    "mongoose": "^5.8.9",
+    "prebuild-install": "^5.3.3",
+    "run-rs": "^0.6.2"
   }
 }
