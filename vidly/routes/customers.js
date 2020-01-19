@@ -1,7 +1,7 @@
-const {Customer, validateCustomer} = require('../models/customerModel');
+const { Customer, validateCustomer } = require("../models/customerModel");
 const express = require("express");
 const router = express.Router();
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 mongoose.set("useFindAndModify", false);
 
@@ -27,7 +27,7 @@ router.put("/:id", async (req, res) => {
   try {
     const customer = await Customer.findByIdAndUpdate(
       req.params.id,
-      { name: req.body.name, phone: req.body.phone, isGold: req.body.isGold},
+      { name: req.body.name, phone: req.body.phone, isGold: req.body.isGold },
       { new: true }
     );
     res.send(customer);
@@ -55,7 +55,5 @@ router.get("/:id", async (req, res) => {
     return res.status(404).send("The genre with the given ID was not found.");
   }
 });
-
-
 
 module.exports = router;
