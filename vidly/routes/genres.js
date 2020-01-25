@@ -2,10 +2,12 @@ const { Genre, validateGenre } = require("../models/genreModel");
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-const authorization = require('../middleware/authorization');
-const admin = require('../middleware/admin')
+const authorization = require("../middleware/authorization");
+const admin = require("../middleware/admin");
 
 mongoose.set("useFindAndModify", false);
+
+
 
 router.get("/", async (req, res) => {
   const genres = await Genre.find().sort("name");
