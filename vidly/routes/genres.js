@@ -2,6 +2,8 @@ const { Genre, validateGenre } = require("../models/genreModel");
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
+const authorization = require('../middleware/authorization');
+const admin = require('../middleware/admin')
 
 mongoose.set("useFindAndModify", false);
 
@@ -10,7 +12,7 @@ router.get("/", async (req, res) => {
   res.send(genres);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", authorization, async (req, res) => {
   //   const newsGenre = req.params.
   const { error } = validateGenre(req.body);
   if (error) return res.status(400).send(error.details[0].message);
@@ -37,7 +39,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", [authorization, admin], async (req, res) => {
   const id = req.params.id;
 
   try {
