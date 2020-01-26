@@ -4,10 +4,9 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const authorization = require("../middleware/authorization");
 const admin = require("../middleware/admin");
+const validateObjectId = require("../middleware/validateObjectId");
 
 mongoose.set("useFindAndModify", false);
-
-
 
 router.get("/", async (req, res) => {
   const genres = await Genre.find().sort("name");
@@ -44,15 +43,13 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", [authorization, admin], async (req, res) => {
   const id = req.params.id;
 
-  try {
-    const genre = await Genre.findByIdAndRemove(id);
-    res.send(genre);
-  } catch (err) {
+  const genre = await Genre.findByIdAndRemove(id);
+  if (!genre)
     return res.status(404).send("The genre with the given ID was not found.");
-  }
+  res.send(genre);
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", validateObjectId, async (req, res) => {
   try {
     const genre = await Genre.findById(req.params.id);
     res.send(genre);

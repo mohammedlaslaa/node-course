@@ -1,14 +1,17 @@
 const mongoose = require("mongoose");
 const winston = require("winston");
+const config = require("config");
 
-let datenow = new Date()
+let datenow = new Date();
 
 module.exports = function() {
   mongoose
-    .connect("mongodb://localhost:27017/vidly", {
+    .connect(config.get("db"), {
       useUnifiedTopology: true,
       useNewUrlParser: true,
       useCreateIndex: true
     })
-    .then(() => winston.info(`Connected to the database... ${datenow}`));
+    .then(() =>
+      winston.info(`Connected to the ${config.get("db")}... ${datenow}`)
+    );
 };
