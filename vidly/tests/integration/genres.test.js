@@ -2,26 +2,26 @@ const request = require("supertest");
 const { Genre } = require("../../models/genreModel");
 const mongoose = require("mongoose");
 const { User } = require("../../models/userModel");
-let server;
 
 describe("/api/film/genres", () => {
+
   beforeEach(() => {
-    server = require("../../index");
+    server =  require("../../index");
   });
 
   afterEach(async () => {
     await Genre.remove({});
     await server.close();
-  });
+  }); 
 
   describe("GET /", () => {
     it("should return all genres", async () => {
       await Genre.collection.insertMany([
         { name: "genre1" },
         { name: "genre2" }
-      ]);
+      ]); 
 
-      const res = await request(server).get("/api/film/genres");
+      const res = await request(server).get("/api/film/genres"); 
       expect(res.status).toBe(200);
       expect(res.body.length).toBe(2);
       expect(res.body.some(g => g.name === "genre1")).toBeTruthy();
@@ -34,28 +34,32 @@ describe("/api/film/genres", () => {
       const genre = new Genre({ name: "genre1" });
       await genre.save();
 
-      const res = await request(server).get(`/api/film/genres/${genre._id}`);
+      const res = await request(server).get('/api/film/genres/' + genre._id);
       expect(res.status).toBe(200);
       expect(res.body).toHaveProperty("name", genre.name);
     });
 
-    it("should return error 404 if invalid id is passed", async () => {
+    it("should return error 404 if invalid id is passed", async () => { 
       const res = await request(server).get(`/api/film/genres/1`);
       expect(res.status).toBe(404);
     });
 
     it("should return error 404 if no genre with the given id exist", async () => {
-      const id = mongoose.Types.ObjectId();
-      const res = await request(server).get(`/api/film/genres/${id}`);
+      const id = await mongoose.Types.ObjectId();
+      const res = await request(server).get('/api/film/genres/' + id);
       expect(res.status).toBe(404);
     });
-  });
-
+  }); 
+ 
   describe("POST /", () => {
-    // Define the happy path and then in each test, we change one parameter that clearly aligns with the name of the test.
-
+    // Define the happy path and then in each test, we change one parameter that clearly aligns with the name of the test. 
     let token;
     let name;
+
+    beforeEach(() => {
+      token = new User().generateAuthToken();
+      name = "genre1";
+    });
 
     const exec = async () => {
       return await request(server)
@@ -63,10 +67,6 @@ describe("/api/film/genres", () => {
         .set("x-auth-token", token)
         .send({ name });
     };
-    beforeEach(() => {
-      token = new User().generateAuthToken();
-      name = "genre1";
-    });
 
     it("should return 401 if client is not logged in", async () => {
       token = "";
@@ -110,13 +110,6 @@ describe("/api/film/genres", () => {
     let genre;
     let id;
 
-    const exec = async () => {
-      return await request(server)
-        .put("/api/film/genres/" + id)
-        .set("x-auth-token", token)
-        .send({ name: newName });
-    };
-
     beforeEach(async () => {
       // Before each test we need to create a genre and
       // put it in the database.
@@ -127,6 +120,13 @@ describe("/api/film/genres", () => {
       id = genre._id;
       newName = "updatedName";
     });
+
+    const exec = async () => {
+      return await request(server)
+        .put("/api/film/genres/" + id)
+        .set("x-auth-token", token)
+        .send({ name: newName });
+    };
 
     it("should return 401 if client is not logged in", async () => {
       token = "";
@@ -153,17 +153,17 @@ describe("/api/film/genres", () => {
     });
 
     it("should return 404 if id is invalid", async () => {
-      id = 1;
-
+      id = "";
+ 
       const res = await exec();
 
       expect(res.status).toBe(404);
     });
 
     it("should return 404 if genre with the given id was not found", async () => {
-      id = mongoose.Types.ObjectId();
+      id = await mongoose.Types.ObjectId();
 
-      const res = await exec();
+      const res = await exec(); 
 
       expect(res.status).toBe(404);
     });
@@ -189,13 +189,6 @@ describe("/api/film/genres", () => {
     let genre;
     let id;
 
-    const exec = async () => {
-      return await request(server)
-        .delete("/api/film/genres/" + id)
-        .set("x-auth-token", token)
-        .send();
-    };
-
     beforeEach(async () => {
       // Before each test we need to create a genre and
       // put it in the database.
@@ -205,6 +198,13 @@ describe("/api/film/genres", () => {
       id = genre._id;
       token = new User({ isAdmin: true }).generateAuthToken();
     });
+
+    const exec = async () => {
+      return await request(server)
+        .delete("/api/film/genres/" + id)
+        .set("x-auth-token", token)
+        .send();
+    };
 
     it("should return 401 if client is not logged in", async () => {
       token = "";
@@ -223,7 +223,7 @@ describe("/api/film/genres", () => {
     });
 
     it("should return 404 if id is invalid", async () => {
-      id = 1;
+      id = ""; 
 
       const res = await exec();
 
@@ -231,8 +231,8 @@ describe("/api/film/genres", () => {
     });
 
     it("should return 404 if no genre with the given id was found", async () => {
-      id = mongoose.Types.ObjectId();
-
+      id = await mongoose.Types.ObjectId();
+ 
       const res = await exec();
 
       expect(res.status).toBe(404);
@@ -253,4 +253,4 @@ describe("/api/film/genres", () => {
       expect(res.body).toHaveProperty("name", genre.name);
     });
   });
-});
+}); 

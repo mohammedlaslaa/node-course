@@ -8,11 +8,10 @@ require("./startup/logging")();
 require("./startup/config")();
 require("./startup/validation")();
 
-const port = process.env.PORT || 8200;
+const port = process.env.PORT || 9030;
 
 const server = app.listen(port, () => {
   winston.info(`Server listening to the port ${port}`);
 });
-
-module.exports = server;
  
+module.exports = server;

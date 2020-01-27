@@ -3,27 +3,27 @@ const { Genre } = require("../../models/genreModel");
 const request = require("supertest");
 
 describe("auth middleware", () => {
+  let server;
   beforeEach(() => {
     server = require("../../index");
   });
 
   afterEach(async () => {
     await Genre.remove({});
-    await server.close();
+    await server.close(); 
   });
 
   let token;
 
+  beforeEach(() => {
+    token = new User().generateAuthToken();
+  });
   const exec = () => {
     return request(server)
       .post("/api/film/genres")
       .set("x-auth-token", token)
       .send({ name: "genre1" });
   };
-
-  beforeEach(() => {
-    token = new User().generateAuthToken();
-  });
 
   it("should return 401 if no token is provided", async () => {
     token = "";
