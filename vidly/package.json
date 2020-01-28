@@ -7,6 +7,9 @@
     "start": "node index.js",
     "test": "jest --watchAll --verbose --coverage"
   },
+  "engines": {
+    "node": "12.14.1"
+  },
   "author": "Mohammed",
   "license": "ISC",
   "dependencies": {
