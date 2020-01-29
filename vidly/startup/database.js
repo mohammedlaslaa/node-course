@@ -4,8 +4,8 @@ const config = require("config");
 
 let datenow = new Date();
 
-module.exports = function() {
-  mongoose
+module.exports = async function() {
+  await mongoose
     .connect(config.get("db"), {
       useUnifiedTopology: true,
       useNewUrlParser: true,
